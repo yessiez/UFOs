@@ -822,6 +822,178 @@ The first step of our code is complete: we've created a table!
 #### ADD/COMMIT/PUSH
 Be sure to save your work and add, commit, and push it to your repo!
 
+## 11.5.3: Add Filters
+<em>The code we helped create will add every object in our `data.js` file to the table. Bundled into one tidy package, every sighting will be available for Dana (and her readers) to view! There are a lot of objects, though, which will make the table huge! There will be hundreds of rows of sightings in the table, which is entirely too much for one person to reasonably look through and study. Therefore, the next step is to add the ability to filter the data. We'll be using D3.js to help Dana with this part.</em>
+
+Data-Driven Documents (D3 for short) is a JavaScript library that adds interactive functionality, such as when users click a button to filter a table. It works by "listening" for events, such as a button click, then reacts according to the code we've created.
+
+Dana thinks that she would like to filter by date, so she'll add code to create a date filter.`</code>`
+
+We'll need to add a second function to our code that will focus on filtering the table we just built. We'll use a popular library, `D3.js`, to equip our website to "listen" for events, such as a user clicking a button.
+
+In our code, we're going to use D3 to handle an action from a user, such as a button click. This means that we'll add an actual button to our HTML page to filter the table. When the button is clicked, D3 will detect the click and react accordingly. Building out user-driven data visualizations is an essential part of the data visualization job; it can be tricky at first, but oh-so-satisfying when it works! Let's get started.
+
+Return to VS Code and our `app.js` file and start a new function. We'll name this one "handleClick" because it will be handling what to do after an input is given, such as filtering the table by date.
+
+Since we're adding a date function, we need to create a couple of variables to hold our date data, both filtered and unfiltered.
+
+    function handleClick() {
+        let date = d3.select("#datetime").property("value");
+
+So what's going on in this code? D3 looks a little different from what we're used to seeing, but that's because it's closely linked to HTML.
+
+The `.select()` function is a very common one used in D3. It will select the very first element that matches our selector string: "#datetime". The selector string is the item we're telling D3.js to look for.
+
+With `d3.select("#datetime")`, for example, we're telling D3 to look for the #datetime id in the HTML tags. We haven't created our HTML yet, but we know that the date value will be nested within tags that have an id of "datetime."
+
+By chaining `.property("value");` to the `d3.select` function, we're telling D3 not only to look for where our date values are stored on the webpage, but to actually grab that information and hold it in the "date" variable.
+
+Now we need to set a default filter and save it to a new variable. Our default filter will actually be the original table data because we want users to refine their search on their own terms. Let's add the new variable on the next line.
+
+    let filteredData = tableData;
+
+Here's a variable we haven't seen in a while: `tableData`. This is the original data as imported from our data.js file. By setting the filteredData variable to our raw data, we're basically using it as a blank slate. The function we're working on right now will be run each time the filter button is clicked on the website. If no date has been entered as a filter, then all of the data will be returned instead.
+
+The next step is to check for a date filter using an `if` statement.
+
+
+## 11.5.4: Use the “If” Statement
+
+<em>Navigating through functions and `for` loops in JavaScript has helped Dana feel more comfortable with coding in this new language. The next part she'll start working on is adding an `if` statement.
+
+The `if` statement in JavaScript is similar to the Pythonic `if` statement, though the syntax is a little alien in comparison. Dana will need to explore how to create `if` statements in JavaScript and then incorporate it into her code as part of the filtering component.</em>
+
+Much like in Python, an `if` statement in JavaScript will check for conditions before executing the code. Our code will check for a date filter, so our if statement should read as follows; 
+  
+  <em>"If there is a date already set, then use that date as a filter. If not, then return the default data."</em>
+
+Look at a basic JavaScript `if` statement, but just for practice as this won't be part of our `app.js` code.
+
+    // if-statement syntax
+    if ( condition ) { code to execute }
+
+In its most basic form, the if statement looks similar to a function. Write pseudocode about what we want our code to do.
+
+    // pseudocode practice
+    if (a date is entered) {
+        Filter the default data to show only the date entered
+    };
+
+That makes a little more sense. We want JavaScript to check for a date. If one is present, we want it to return only the data with that date. Now return to our `app.js` file to add our if statement.
+
+    if (date) {
+        filteredData = filteredData.filter(row => row.datetime === date);
+    };
+
+Take a closer look at the line that's inside our if-statement.
+
+
+Take a look at the syntax for the `.filter()` method: 
+
+`row => row.datetime === date);`. 
+- This line is what applies the filter to the table data. It's basically saying, "Show only the rows where the date is equal to the date filter we created above." 
+- The triple equal signs test for equality, meaning that the date in the table has to match our filter exactly.
+
+#### IMPORTANT
+There are two ways to test for equality in JavaScript: `==` and `===`. While they look similar, there are differences. 
+- A triple equal sign (`===`) is checking for strict equality. This means that the type and value have to match perfectly.
+
+- A double equals sign (`==`) is checking for loose equality. This means that the type and value are loosely matched. For more information about equality in JavaScript, read [JavaScript — Double Equals vs. Triple Equals](https://codeburst.io/javascript-double-equals-vs-triple-equals-61d4ce5a121a). 
+
+When we look at our complete `if` statement, it should appear as follows:
+
+    if (date) {
+        filteredData = filteredData.filter(row => row.datetime === date);
+      };
+
+- Our `handleClick()` function tells the code what to do when an event occurs (such as someone clicking a filter button), and it can apply that filtered data using an if statement. Being able to do all of this is great, especially since it involves creating functions written in a syntax that isn't the easiest to learn. There is one more step to complete with this function, though: building the table using the filtered data.
+
+### Build the Filtered Table
+Thankfully, we've already set up a function to build a table: `buildTable();`. Now we just need to call it. Remember, we're building the function with the filtered data, so we'll use that variable as our argument.
+
+Under our if-statement, let's call the `buildTable` function.
+
+
+
+After we pass `filteredData` in as our new argument, our full `handleClick()` function should look like the one below:
+
+    function handleClick() {
+      // Grab the datetime value from the filter
+      let date = d3.select("#datetime").property("value");
+      let filteredData = tableData;
+
+      // Check to see if a date was entered and filter the
+      // data using that date.
+      if (date) {
+        // Apply `filter` to the table data to only keep the
+        // rows where the `datetime` value matches the filter value
+        filteredData = filteredData.filter(row => row.datetime === date);
+      };
+
+      // Rebuild the table using the filtered data
+      // @NOTE: If no date was entered, then filteredData will
+      // just be the original tableData.
+      buildTable(filteredData);
+    };
+
+### Listen for the Event
+
+Our code is almost ready to be attached to the HTML component of our webpage. There are just a couple of loose ends to tie up. One is the clicking that will happen when someone filters the table. We have a function that handles a click, but how does the code know when a click happens?
+
+Another aspect of D3.js is that it can listen for events that occur on a webpage, such as a button click. The next code we add will be tied to the filter button we'll build on our webpage.
+
+Under our `handleClick() ` function, add the following line of code:
+
+    d3.selectAll("#filter-btn").on("click", handleClick);
+
+
+Our selector string contains the id for another HTML tag. (We'll assign a unique id to a button element in the HTML called "filter-btn".) This time it'll be included in the button tags we create for our filter button. By adding this, we're linking our code directly to the filter button. Also, by adding `.on("click", handleClick);`, we're telling D3 to execute our `handleClick()` function when the button with an id of `filter-btn` is clicked.
+
+**NOTE:**
+A "click" isn't the only event that D3.js can listen for—there are a variety of actions that can be listened for and handled. For example, a tooltip displays when you place your mouse over a specific element on a webpage.
+
+Events aren't limited to mouse events, either. They can include keyboard, text composition, forms—the list is lengthy and some of the events are quite advanced.
+
+### Build the Final Table
+There is only a single step left before we can build the HTML component of the webpage: making sure the table loads as soon as the page does. Dana's readers will need to see the original table to even begin to use the filter we've set up. At the very end of the code, we'll call our `buildTable` function once more—this time using the original data we've imported. Type the following code:
+
+    buildTable(tableData);
+
+Once this function is called, it will create a basic table filled with row upon row of unfiltered data pulled straight from our array.
+
+All together, our code in the `app.js` file will look as follows:
+
+    function handleClick() {
+      // Grab the datetime value from the filter
+      let date = d3.select("#datetime").property("value");
+      let filteredData = tableData;
+
+      // Check to see if a date was entered and filter the
+      // data using that date.
+      if (date) {
+        // Apply `filter` to the table data to only keep the
+        // rows where the `datetime` value matches the filter value
+        filteredData = filteredData.filter(row => row.datetime === date);
+      }
+
+      // Rebuild the table using the filtered data
+      // @NOTE: If no date was entered, then filteredData will
+      // just be the original tableData.
+      buildTable(filteredData);
+    }
+
+    // Attach an event to listen for the form button
+    d3.selectAll("#filter-btn").on("click", handleClick);
+
+    // Build the table when the page loads
+    buildTable(tableData);
+
+Now you're ready to start building your webpage!
+
+#### ADD/COMMIT/PUSH
+Make sure to save your work and add, commit, and push it to your repo!
+
+
 
 # Build the HTML
 
