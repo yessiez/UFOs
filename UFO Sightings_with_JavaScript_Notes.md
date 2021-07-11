@@ -1303,6 +1303,33 @@ Be sure to save your work and add, commit, and push it to your repo!
 
 
 
+11.6.2
+Add the Data
+Dana's page is starting to really come together. The layout from the storyboard has transferred directly to the HTML, making the construction fairly seamless. There was still quite a bit of nesting and manual entry going on, but the overall result is a clean page, ready to display data.
+
+The next step in getting Dana's page viewer-ready is to link D3.js, app.js, and data.js to the HTML.
+The UFO webpage looks nice and clean and appears to be functioning well, but the only way to truly test it is to tie it together with the JavaScript code we created earlier. We'll tie them together by adding <script /> tags then linking to the file's location. This is very similar to when we added a link to our stylesheet. Only this time, the links to our scripts will be at the bottom of the page.
+
+IMPORTANT
+When adding multiple <script /> links to a webpage, the order matters. The order we link our files will be the order they are executed. If we link app.js before data.js, then the app will try to build the table before the data has loaded. This will generate an error and break the table.
+
+At the bottom of the page, under the last <div /> tag, we will need to add our scripts. There are three we need to include, in the following order:
+
+A link to a D3.js CDN
+The file path to data.js
+The file path to app.js
+These will each be added via a script tag. Let's add them now.
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.11.0/d3.js"></script>
+  <script src="static/js/data.js"></script>
+  <script src="static/js/app.js"></script>
+Adding the link to D3.js allows the library to "listen" in on our code, or react to user input. For example, if we did not add this link, our d3.select section of code in app.js wouldn't know where to insert data.
+
+We linked todata.js next because the UFO sightings data needs to be loaded before it can be accessed, as we do in the app.js script.
+
+Once the file has been saved, return to the page you opened in your browser and refresh it. The table should now be filled to the brim with UFO sightings data. Even better, the filter button should work as intended.
+
+
 # Application
 
 ## Module 11 Challenge
